@@ -1,0 +1,56 @@
+version: "3"
+
+volumes:
+    envoy_data: {}
+
+services:
+
+  server1:
+    build: v1/.
+    restart: always
+    container_name: server1
+    networks:
+      - servers
+    ports:
+      - "7771:7771/tcp"
+
+  server2:
+    build: v2/.
+    restart: always
+    container_name: server2
+    networks:
+      - servers
+    ports:
+      - "7772:7772/tcp"
+
+  server3:
+    build: v3/.
+    restart: always
+    container_name: server3
+    networks:
+      - servers
+    ports:
+      - "7773:7773/tcp"
+
+  server4:
+    build: v4/.
+    restart: always
+    container_name: server4
+    networks:
+      - servers
+    ports:
+      - "7774:7774/tcp"
+
+  envoy:
+    network_mode: host
+    image: envoyproxy/envoy:v1.20-latest
+    ports:
+      - "8801:9901/tcp"
+      - "8000:8000/tcp"
+    volumes:
+      - ../../config/config.yaml:/etc/envoy/envoy.yaml 
+
+networks:
+  servers:
+    name: servers
+    driver: bridge
